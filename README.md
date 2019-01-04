@@ -18,5 +18,5 @@ A simple program written in python3 which downloads comic strips from all your f
     ```
 ### Uninstallation
     ```
-    rm -rf comic-scrapper
+    rm -rf comic-scapper
     ```
