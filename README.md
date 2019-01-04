@@ -17,6 +17,7 @@ A simple program written in python3 which downloads comic strips from all your f
     ./comic-scrapper.py
     ```
 ### Uninstallation
+Simply remove the directory
     ```
     rm -rf comic-scapper
     ```
