@@ -284,9 +284,6 @@ if __name__ == '__main__':
 
         print('downloading comics: ', cs.max_length)
 
-        #for c in cs.comics:
-        #    print(c.Name, c.Title, c.Website, c.ComicURL, c.ImageURL, c.Filename)
-
         print('Downloading... \n\n')
         for c in cs:
             print(c.Name, c.Title, c.Website, c.ComicURL, c.ImageURL, c.Filename)

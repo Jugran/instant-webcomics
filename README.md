@@ -6,7 +6,7 @@ A simple program written in python3 which downloads comic strips from all your f
 1. Clone the git repo
     ```
     git clone https://github.com/Jugran/comic-scrapper.git
-    cd src/comic-scrapper	
+    cd comic-scrapper	
     ```
 2. Make file executable
     ```
@@ -21,3 +21,5 @@ Simply remove the directory
     ```
     rm -rf comic-scapper
     ```
+
+
