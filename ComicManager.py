@@ -25,7 +25,7 @@ class ComicManager:
         comics = []
 
         for source in self.sourceList:
-            comic = SourceManager.download_comic(source, length)
+            comic = SourceManager.get_comics(source, length)
             comics.append(comic)
 
         return comics

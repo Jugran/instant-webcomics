@@ -10,7 +10,7 @@ if __name__ == '__main__':
         pass
 
     if input("Add comic strips sources?[y|n] ") == 'y':
-        SourceManager.add_comic_details()
+        SourceManager.add_new_comic()
 
     if input("Load comics? [y|n]") == 'y':
         comicManger = ComicManager.ComicManager(length=1)
