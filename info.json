@@ -2,30 +2,33 @@
     {
         "name": "xkcd",
         "website": "www.xkcd.com",
+        "feed_url": "https://www.xkcd.com/rss.xml",
         "comic_url": "https://www.xkcd.com/",
-        "image_cssSelector": "#comic > img",
+        "image_selector": "#comic > img",
         "image_url_prefix": "https:",
-        "prev_comic_cssSelector": "ul.comicNav > li:nth-of-type(2) > a:nth-of-type(1)",
+        "prev_comic_selector": "ul.comicNav > li:nth-of-type(2) > a:nth-of-type(1)",
         "prev_url_prefix": "https://www.xkcd.com",
         "prev_comic": ""
     },
     {
         "name": "Cyanide and Happiness",
         "website": "www.explosm.net",
+        "feed_url": "",
         "comic_url": "http://www.explosm.net/comics/5132",
-        "image_cssSelector": "#main-comic",
+        "image_selector": "#main-comic",
         "image_url_prefix": "https:",
-        "prev_comic_cssSelector": ".nav-previous",
+        "prev_comic_selector": ".nav-previous",
         "prev_url_prefix": "http://www.explosm.net",
         "prev_comic": ""
     },
     {
         "name": "Monkey User",
         "website": "www.monkeyuser.com",
+        "feed_url": "https://www.monkeyuser.com/feed",
         "comic_url": "https://www.monkeyuser.com/2018/replace-all/",
-        "image_cssSelector": ".content > p:nth-of-type(1) > img:nth-of-type(1)",
+        "image_selector": ".content > p:nth-of-type(1) > img:nth-of-type(1)",
         "image_url_prefix": "",
-        "prev_comic_cssSelector": "div.content-container div.page-navigation > div.timeline > div:nth-of-type(4) > a:nth-of-type(1)",
+        "prev_comic_selector": "div.content-container div.page-navigation > div.timeline > div:nth-of-type(4) > a:nth-of-type(1)",
         "prev_url_prefix": "https://www.monkeyuser.com",
         "prev_comic": ""
     }

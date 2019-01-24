@@ -72,12 +72,13 @@ class ComicSource:  # iterable class which will provide the list of comics from 
             if download_image(self.comics[self.current]):
                 return self.comics[self.current]
             else:
+                print('Image not found skipping...')
                 return next(self)
         else:
             raise StopIteration
 
 
-def add_to_json(comic_info: ComicStripInfo):
+def add_source_data(comic_info: ComicStripInfo):
     if os.path.isfile(Globals.JSONFilename):
         with open(Globals.JSONFilename, 'a+') as file:
             file.seek(0, os.SEEK_END)
@@ -94,17 +95,17 @@ def add_to_json(comic_info: ComicStripInfo):
             json.dump([comic_info], file, indent=4, cls=CustomJSONEncoder)
 
 
-def read_json():
+def get_source_data():
     '''
-    :return: list of ComicStripInfo objects
+    :return: ComicStripInfo object
     '''
 
     if os.path.isfile(Globals.JSONFilename):
         with open(Globals.JSONFilename, 'r') as file:
             data = json.load(file, object_hook=decode_object)
-        return data
+            return data
     else:
-        return []
+        return None
 
 
 def check_url(url: str, return_data=False):
@@ -125,6 +126,8 @@ def check_url(url: str, return_data=False):
 
 
 def download_image(comic: Comic) -> bool:
+    print('saving file ', comic.Filename)
+
     path = os.path.join(Globals.ImageDir, comic.Name)
     if not os.path.exists(path):
         os.makedirs(path)
@@ -258,6 +261,7 @@ def add_new_comic():
     url_status = check_url(website_url)
 
     if url_status == 200:
+        new_source.website = website_url
         feed_url = get_rss_feed(website_url)
 
         feed_url_status = check_url(feed_url)
@@ -271,19 +275,4 @@ def add_new_comic():
     return new_source
 
 
-if __name__ == '__main__':
-    while True:
-        ci = add_new_comic()
-        ci.name = ci.website[:-4]
 
-        print(ci.feed_url)
-
-        ComicSource.max_length = 5
-
-        cs = ComicSource(ci)
-
-        print('downloading comics: ', cs.max_length)
-
-        print('Downloading... \n\n')
-        for c in cs:
-            print(c.Name, c.Title, c.Website, c.ComicURL, c.ImageURL, c.Filename)
