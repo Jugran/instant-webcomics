@@ -1,17 +1,14 @@
-import Globals
 import SourceManager
 
 
 class ComicManager:
-    comicList = []   # mixed list of comics from all sources
+    comicList = []  # mixed list of comics from all sources
     comicSourceList = []
     currentComic = -1
 
-    def __init__(self, length=Globals.ImageItems):
-        '''
-        :param length: Number of comics from each source
-        '''
+    def __init__(self):
         self.load_comics()
+
         print('comics loaded')
 
     def load_comics(self):
@@ -20,12 +17,12 @@ class ComicManager:
             comic_source = SourceManager.ComicSource(sd)
             self.comicSourceList.append(comic_source)
 
-    def get_comic(self, comic_index=0):
+    def get_comic(self, comic_index=0) -> SourceManager.Comic:
         comic = self.comicList[comic_index]
         self.currentComic = comic_index
         return comic
 
-    def get_next(self, source_index=0):
+    def get_next(self, source_index=0) -> SourceManager.Comic:
         self.currentComic += 1
         if self.currentComic >= len(self.comicList):
             # load comic
@@ -39,9 +36,7 @@ class ComicManager:
         else:
             return self.comicList[self.currentComic]
 
-    def get_prev(self):
+    def get_prev(self) -> SourceManager.Comic:
         if self.currentComic > 0:
             self.currentComic -= 1
             return self.comicList[self.currentComic]
-
-

@@ -70,6 +70,7 @@ class ComicSource:  # iterable class which will provide the list of comics from 
         # download next comic
         if self.current < len(self.comics) and self.current < self.max_length:
             if download_image(self.comics[self.current]):
+                print('Downloaded ', self.comics[self.current].Filename)
                 return self.comics[self.current]
             else:
                 print('Image not found skipping...')
@@ -143,6 +144,7 @@ def download_image(comic: Comic) -> bool:
         path = os.path.join(path, comic.Filename)
         with open(path, 'wb') as buffer:
             buffer.write(img_data)
+        comic.Filename = path
         return True
 
 
@@ -275,4 +277,22 @@ def add_new_comic():
     return new_source
 
 
+# testing
 
+
+if __name__ == '__main__':
+    while True:
+        ci = add_new_comic()
+        ci.name = ci.website[:-4]
+
+        print(ci.feed_url)
+
+        ComicSource.max_length = 5
+
+        cs = ComicSource(ci)
+
+        print('downloading comics: ', cs.max_length)
+
+        print('Downloading... \n\n')
+        for c in cs:
+            print(c.Name, c.Title, c.Website, c.ComicURL, c.ImageURL, c.Filename)
