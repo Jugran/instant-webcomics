@@ -1,25 +1,25 @@
-# Comic Strip Scrapper
+# Instant Webcomics 
 A simple program written in python3 which downloads comic strips from all your favorite sources.
 
 ## Installation
 #### GNU/Linux
 1. Clone the git repo
     ```
-    git clone https://github.com/Jugran/comic-scrapper.git
-    cd comic-scrapper	
+    git clone https://github.com/Jugran/instant-webcomics
+    cd instant-webcomics
     ```
 2. Make file executable
     ```
-    chmod +x comic-scrapper.py
+    chmod +x instant-webcomics.py
     ```
 3. Run the script
     ```
-    ./comic-scrapper.py
+    ./instant-webcomics.py
     ```
 ### Uninstallation
 Simply remove the directory
     ```
-    rm -rf comic-scapper
+    rm -rf instant-webcomics
     ```
 
 
