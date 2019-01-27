@@ -9,7 +9,7 @@ Guide for installing PyGOject is available in [PyGOject's official documentation
 
 Rest of the packages are available on PyPI.
 ```
-    pip install bs4 requests lxml
+pip install bs4 requests lxml
 ```
 
 ## Installation
@@ -31,9 +31,16 @@ Before proceding make sure that all the required dependencies are installed.
     ./instant-webcomics.py
     ```
 ### Uninstallation
+
 Simply remove the directory
     ```
     rm -rf instant-webcomics
     ```
 
+#### Roadmap
+[x] Add rss support
+[x] Add GUI
+[ ] Add option for user to enter their own websites
+
+- - - - 
 
