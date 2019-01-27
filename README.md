@@ -38,9 +38,9 @@ Simply remove the directory
     ```
 
 #### Roadmap
-[x] Add rss support
-[x] Add GUI
-[ ] Add option for user to enter their own websites
+- [x] Add rss support
+- [x] Add GUI
+- [ ] Add option for user to enter their own websites
 
 - - - - 
 
