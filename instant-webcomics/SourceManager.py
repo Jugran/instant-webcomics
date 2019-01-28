@@ -101,7 +101,7 @@ def get_source_data():
     :return: ComicStripInfo object
     '''
 
-    if os.path.isfile(Globals.JSONFilename):
+    if os.path.isfile( Globals.JSONFilename):
         with open(Globals.JSONFilename, 'r') as file:
             data = json.load(file, object_hook=decode_object)
             return data
@@ -133,6 +133,13 @@ def download_image(comic: Comic) -> bool:
     if not os.path.exists(path):
         os.makedirs(path)
 
+    path = os.path.join(path, comic.Filename)
+
+    if os.path.exists(path):
+        print('Image file exits, loading ...')
+        comic.Filename = path
+        return True
+
     img_data = check_url(comic.ImageURL, True)
 
     if isinstance(img_data, int) or isinstance(img_data, str):
@@ -141,7 +148,7 @@ def download_image(comic: Comic) -> bool:
     else:
         img_data = img_data[-1].content
         # saving image file
-        path = os.path.join(path, comic.Filename)
+        # path = os.path.join(path, comic.Filename)
         with open(path, 'wb') as buffer:
             buffer.write(img_data)
         comic.Filename = path
@@ -193,7 +200,7 @@ def get_comics(source: ComicStripInfo, length=Globals.ImageItems, save_image=Fal
     return comics
 
 
-def get_comics_from_feed(source: ComicStripInfo, length=Globals.ImageItems, save_image=False):
+def get_comics_from_feed(source: ComicStripInfo, save_image=False):
     data = check_url(source.feed_url, True)
 
     if isinstance(data, int) or isinstance(data, str):

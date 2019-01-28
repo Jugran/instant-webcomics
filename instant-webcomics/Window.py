@@ -1,3 +1,6 @@
+import gi
+
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf
 
 from ComicManager import ComicManager
@@ -7,17 +10,10 @@ from SourceManager import Comic
 class ComicBox(Gtk.Box):
     comicManager = ComicManager()
 
-    # resize comic box before resizing image
     def __init__(self):
         super().__init__()
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_homogeneous(False)
-
-        '''
-
-                modify functions to initialise elements and set their values separatly
-                so that set values can be called separatly to change the comic strip
-        '''
 
         self.set_view()
         self.update_comic(self.comicManager.get_next())
@@ -45,12 +41,16 @@ class ComicBox(Gtk.Box):
         self.link = Gtk.Label()
         self.image = Gtk.Image()
 
+        self.scrolled_window = Gtk.ScrolledWindow()
+        self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.scrolled_window.add(self.image)
+
         comic_header.pack_start(self.title, False, True, 5)
         comic_header.pack_start(self.link, False, False, 5)
 
         self.pack_start(controls, False, True, 0)
         self.pack_start(comic_header, False, True, 0)
-        self.pack_start(self.image, True, True, 10)
+        self.pack_start(self.scrolled_window, True, True, 10)
 
     def update_comic(self, comic: Comic):
 
@@ -67,6 +67,7 @@ class ComicBox(Gtk.Box):
         # update Image
         self.image.set_from_file(comic.Filename)
         self.image.pixbuf = self.image.get_pixbuf()
+
         # self.resize()
 
     def next(self, button=None):
@@ -159,6 +160,3 @@ def start_gui():
     win = MainWindow()
     Gtk.main()
 
-if __name__ == "__main__":
-    win = MainWindow()
-    Gtk.main()

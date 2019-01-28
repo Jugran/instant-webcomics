@@ -5,7 +5,7 @@ A simple program written in python3 which downloads and shows comic strips from 
 ### Dependencies 
 Instant Webcomics requires PyGObject for GTK interface, BeautifulSoup4 and lxml for html/xml parsing, and requests for sending and recieving http requests.
 
-Guide for installing PyGOject is available in [PyGOject's official documentation](https://pygobject.readthedocs.io/en/latest/getting_started.html) for diffrent platforms.
+Guide for installing PyGObject is available in [PyGObject's official documentation](https://pygobject.readthedocs.io/en/latest/getting_started.html) for diffrent platforms.
 
 Rest of the packages are available on PyPI.
 ```
