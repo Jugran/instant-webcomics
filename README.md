@@ -1,5 +1,8 @@
 # Instant Webcomics
 A simple program written in python3 which downloads and shows comic strips from all your favorite sources.
+
+![quick peak](/images/demo.gif)
+
 - - - - 
 
 ### Dependencies 
