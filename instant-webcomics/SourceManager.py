@@ -80,6 +80,7 @@ class ComicSource:  # iterable class which will provide the list of comics from 
 
 
 def add_source_data(comic_info: ComicStripInfo):
+
     if os.path.isfile(Globals.JSONFilename):
         with open(Globals.JSONFilename, 'a+') as file:
             file.seek(0, os.SEEK_END)
@@ -184,7 +185,6 @@ def get_comics(source: ComicStripInfo, length=Globals.ImageItems, save_image=Fal
 
         comic.Filename = img_path.split('/')[-1]
         comic.Title = comic.Filename.replace('_', ' ')
-        comic.Website = source.website
         comic.ComicURL = source.comic_url
         comic.Name = source.name
 
@@ -210,7 +210,6 @@ def get_comics_from_feed(source: ComicStripInfo, save_image=False):
     soup = BeautifulSoup(data[-1].text, 'xml')
 
     comic_list = []
-    Comic.Website = soup.channel.title.text
 
     items = soup.channel.find_all('item')
     # some comics have 'entry' instead of item: use css selector of rss to navigate
@@ -230,7 +229,7 @@ def get_comics_from_feed(source: ComicStripInfo, save_image=False):
         comic.ComicURL = item.link.text
 
         comic.Filename = comic.Title + comic.ImageURL[-4:]
-        comic.Name = source.name
+        comic.Name = soup.channel.title.text
 
         if save_image:
             if not download_image(comic):
@@ -250,6 +249,9 @@ def get_rss_feed(url: str):
 
     soup = BeautifulSoup(data[-1].text, 'lxml')
     rss_link = soup.find('link', {'type': 'application/rss+xml'})
+
+    if rss_link is None:
+        rss_link = soup.find('link', {'type': 'application/atom+xml'})
 
     if rss_link is not None:
         rss_link = rss_link.attrs['href']
@@ -281,25 +283,13 @@ def add_new_comic():
     else:
         print('website returned:', url_status)
 
+    print(new_source.website, new_source.feed_url)
+
+    new_source.name = new_source.website[:-4]
+
     return new_source
 
 
-# testing
 
 
-if __name__ == '__main__':
-    while True:
-        ci = add_new_comic()
-        ci.name = ci.website[:-4]
 
-        print(ci.feed_url)
-
-        ComicSource.max_length = 5
-
-        cs = ComicSource(ci)
-
-        print('downloading comics: ', cs.max_length)
-
-        print('Downloading... \n\n')
-        for c in cs:
-            print(c.Name, c.Title, c.Website, c.ComicURL, c.ImageURL, c.Filename)

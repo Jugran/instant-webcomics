@@ -1,4 +1,4 @@
 ImageSpacing = 20
-ImageItems = 5
+ImageItems = 2
 ImageDir = './Images/'
 JSONFilename = 'info.json'
