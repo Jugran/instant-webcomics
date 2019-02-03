@@ -1,6 +1,6 @@
 import json
 import os
-
+import re
 import requests
 from bs4 import BeautifulSoup
 
@@ -80,7 +80,6 @@ class ComicSource:  # iterable class which will provide the list of comics from 
 
 
 def add_source_data(comic_info: ComicStripInfo):
-
     if os.path.isfile(Globals.JSONFilename):
         with open(Globals.JSONFilename, 'a+') as file:
             file.seek(0, os.SEEK_END)
@@ -102,7 +101,7 @@ def get_source_data():
     :return: ComicStripInfo object
     '''
 
-    if os.path.isfile( Globals.JSONFilename):
+    if os.path.isfile(Globals.JSONFilename):
         with open(Globals.JSONFilename, 'r') as file:
             data = json.load(file, object_hook=decode_object)
             return data
@@ -143,7 +142,7 @@ def download_image(comic: Comic) -> bool:
 
     img_data = check_url(comic.ImageURL, True)
 
-    if isinstance(img_data, int) or isinstance(img_data, str):
+    if isinstance(img_data, int) or isinstance(img_data, str) or img_data is None:
         print('Image url returned status:', img_data)
         return False
     else:
@@ -207,6 +206,17 @@ def get_comics_from_feed(source: ComicStripInfo, save_image=False):
         print('url returned status:', data)
         return
 
+    """
+    imgurl_regex = re.compile(r'''src="
+                                (?:https?)?     #http
+                                (?:[://]+)      #://
+                                (?:(?:www\.)?     # www
+                                (?:\.+ \. \w{3}))? #website name - www. xyz .com
+                                (.+\.(?:jpg|png))" ''', re.X)
+    """
+
+    imgurl_regex = re.compile(r'src="(?:https?)?(?:[://]+)(.+\.(?:jpg|png))"')
+
     soup = BeautifulSoup(data[-1].text, 'xml')
 
     comic_list = []
@@ -216,13 +226,17 @@ def get_comics_from_feed(source: ComicStripInfo, save_image=False):
 
     for item in items:
         comic = Comic()
-        desc = item.description  # use find(path) where path is the img element to find
-        desc_soup = BeautifulSoup(desc.text, 'xml')
-        link = desc_soup.img
 
-        if link is not None:
-            comic.ImageURL = link.attrs['src']
+        # use find(path) where path is the img element to find
+        description = item.description.text
+        img_links = imgurl_regex.search(description)
 
+        if img_links is not None:
+            img_url = img_links.groups()[0]
+
+            img_url = re.sub(r'-\d\d\dx\d\d\d', '', img_url)
+
+            comic.ImageURL = img_url
             # TODO: MEDIUM | if image url has size appended then remove it; use regex->  (xxx(-123x123).ext)
 
         comic.Title = item.title.text
@@ -240,6 +254,19 @@ def get_comics_from_feed(source: ComicStripInfo, save_image=False):
     return comic_list
 
 
+def verify_new_comics(new_source: ComicStripInfo):
+    feed_data = requests.get(new_source.feed_url).text
+
+    soup = BeautifulSoup(feed_data, 'xml')
+    item = soup.channel.find('item')
+    if item.description.text != '':
+        soup = BeautifulSoup(item.description.text, 'xml')
+        img_url = soup.find('img')
+
+        # if img_url is not None: check for regex
+    # elif item.media
+
+
 def get_rss_feed(url: str):
     data = check_url(url, True)
 
@@ -248,6 +275,7 @@ def get_rss_feed(url: str):
         return
 
     soup = BeautifulSoup(data[-1].text, 'lxml')
+
     rss_link = soup.find('link', {'type': 'application/rss+xml'})
 
     if rss_link is None:
@@ -256,40 +284,59 @@ def get_rss_feed(url: str):
     if rss_link is not None:
         rss_link = rss_link.attrs['href']
 
-        # TODO: MEDIUM | verify and fix feed url
-        if url not in rss_link:
+        if 'http' not in rss_link:  # fix relative url
             rss_link = url + rss_link
 
-    return rss_link
+    return rss_link  # return type (rss or atom)
 
 
-def add_new_comic():
+def add_new_comic(**kwargs):
     # TODO: MEDIUM | get details; test this part
 
-    new_source = ComicStripInfo()
+    if 'website' in kwargs:
+        new_source = ComicStripInfo()
+        website_url = kwargs['website'].split(':')[-1].replace('/', '')
+        website_url = 'http://' + website_url
+        url_status = check_url(website_url)
 
-    website_url = input('Website url: ')
-    url_status = check_url(website_url)
+        if url_status == 200:
+            new_source.website = website_url
 
-    if url_status == 200:
-        new_source.website = website_url
-        feed_url = get_rss_feed(website_url)
+            if 'feed' in kwargs:
+                feed_url = kwargs['feed'].split(':')[-1].replace('//', '')
+                feed_url = 'http://' + feed_url
+            else:
+                feed_url = get_rss_feed(website_url)
 
-        feed_url_status = check_url(feed_url)
-        if feed_url_status == 200:
-            new_source.feed_url = feed_url
+            if feed_url is not None:
+
+                feed_url_status = check_url(feed_url)
+
+                if feed_url_status == 200:
+                    new_source.feed_url = feed_url
+                    # TODO: low | check image links in rss
+
+                else:
+                    print('feed not reachable \n url returned:', feed_url_status)
+            else:
+                print("feed url not found on website header. ")
         else:
-            print('feed not found \n url returned:', feed_url_status)
-    else:
-        print('website returned:', url_status)
+            print('website returned:', url_status)
 
-    print(new_source.website, new_source.feed_url)
+        print(new_source.website, new_source.feed_url)
 
-    new_source.name = new_source.website[:-4]
+        new_source.name = new_source.website[:-4]
 
-    return new_source
+        return new_source
 
 
+if __name__ == '__main__':
 
+    while True:
 
+        website = input("website: ")
+        newSource = add_new_comic(website=website)
+        print(newSource.name, newSource.feed_url, newSource.website)
 
+        for ci in get_comics_from_feed(newSource):
+            print(ci.Name, ci.ImageURL, ci.Filename, ci.Title, ci.ComicURL)

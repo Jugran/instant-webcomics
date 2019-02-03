@@ -35,22 +35,25 @@ class ComicBox(Gtk.Box):
         controls.pack_start(next_button, False, False, 5)
         controls.pack_end(resize_button, False, False, 5)
 
-        comic_header = Gtk.Box()
+        comic_header = Gtk.Grid()
+        # comic_header.set_column_homogeneous(False)
 
         self.title = Gtk.Label()
+        self.name = Gtk.Label()
         self.link = Gtk.Label()
         self.image = Gtk.Image()
 
-        self.scrolled_window = Gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.scrolled_window.add(self.image)
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scrolled_window.add(self.image)
 
-        comic_header.pack_start(self.title, False, True, 5)
-        comic_header.pack_start(self.link, False, False, 5)
+        comic_header.add(self.title)
+        comic_header.attach_next_to(self.name, self.title, Gtk.PositionType.BOTTOM, 1, 1)
+        comic_header.attach_next_to(self.link, self.name, Gtk.PositionType.RIGHT, 1, 1)
 
         self.pack_start(controls, False, True, 0)
         self.pack_start(comic_header, False, True, 0)
-        self.pack_start(self.scrolled_window, True, True, 10)
+        self.pack_start(scrolled_window, True, True, 10)
 
     def update_comic(self, comic: Comic):
 
@@ -58,7 +61,9 @@ class ComicBox(Gtk.Box):
         self.title.set_markup("<span size=\"xx-large\"><b>" + comic.Title + "</b></span>")
         self.title.set_line_wrap(True)
         self.title.set_halign(Gtk.Align.START)
-        # label.set_selectable(True)
+
+        # update name
+        self.name.set_markup("<span><i><b>" + comic.Name + " </b></i></span>")
 
         # update link
         self.link.set_markup("<a href=\"" + comic.ComicURL + "\">Link</a>")
@@ -140,13 +145,13 @@ class MainWindow(Gtk.Window):
 
         self.comic_box = ComicBox()
 
-        toolbar = Gtk.Box()
+        # toolbar = Gtk.Box()
 
-        add_button = Gtk.Button("Add")
+        # add_button = Gtk.Button("Add")
 
-        toolbar.pack_start(add_button, False, False, 0)
+        # toolbar.pack_start(add_button, False, False, 0)
 
-        self.main_box.pack_start(toolbar, False, False, 0)
+        # self.main_box.pack_start(toolbar, False, False, 0)
         self.main_box.pack_start(self.comic_box, True, True, 10)
 
         print("Finished adding UI elements ...")
@@ -160,3 +165,6 @@ def start_gui():
     win = MainWindow()
     Gtk.main()
 
+
+if __name__ == '__main__':
+    start_gui()
